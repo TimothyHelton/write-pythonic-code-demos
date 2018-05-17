@@ -13,10 +13,11 @@ def main():
     print(m)
 
     # ******** less pythonic ********
-    # if m == Moves.North or m == Moves.South or m == Moves.West or m == Moves.East:
-    #     print("That's a direct move.")
-    # else:
-    #     print("That's a diagonal move.")
+    if m == Moves.North or m == Moves.South or m == Moves.West or \
+            m == Moves.East:
+        print("That's a direct move.")
+    else:
+        print("That's a diagonal move.")
 
     # ******** more pythonic ********
     if m in {Moves.North, Moves.South, Moves.West, Moves.East}:
@@ -90,8 +91,3 @@ def time_for_loop(move: Moves):
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
