@@ -1,5 +1,5 @@
-import datetime
 from enum import Enum
+from timeit import repeat
 
 
 def main():
@@ -24,18 +24,7 @@ def main():
     else:
         print("That's a diagonal move.")
 
-        # direct_moves = {Moves.North, Moves.South, Moves.West, Moves.East}
-        # t0 = datetime.datetime.now()
-        # speed: .2 sec for multiple tests
-        #        2.3 sec for basic slow in
-        #        .3 sec for cached direct moves in
-        # for _ in range(0, 1000000):
-        #     # b = m == Moves.North or m == Moves.South or m == Moves.West or m == Moves.East
-        #     b = m in direct_moves
-        #     # b = m in {Moves.North, Moves.South, Moves.West, Moves.East}
-        # t1 = datetime.datetime.now()
-        # dt = t1 - t0
-        # print("Time delta: {:,} sec".format(dt.total_seconds()))
+    time_for_loop(m)
 
 
 class Moves(Enum):
@@ -73,6 +62,30 @@ class Moves(Enum):
             return Moves.SouthEast
 
         return None
+
+
+def time_for_loop(move: Moves):
+    """
+    Display the cpu time required to execute various types of for loops.
+    :param move: integer describing move
+    """
+    g = {'m': move}
+    statements = {
+        # 'test_name': (timer_statement, timer_globals),
+        'or': ('m == 0 or m == 1 or m == 2 or m == 3', g),
+        'set': ('m in range(3)', g),
+        'global': ('m in direction', {**{'direction': range(3)}, **g}),
+    }
+
+    times = {}
+    for name, args in statements.items():
+        kwargs = {k: v for k, v in zip(('stmt', 'globals'), args)}
+        times[name] = min(repeat(repeat=3, **kwargs))
+
+    sorted_times = sorted(times.items(), key=lambda x: x[1])
+    sorted_times = [x for row in sorted_times for x in row]
+    fmt = '{:<%d} :  ' % max(map(len, times))
+    print(((fmt + '{:.3f}\n') * 3).format(*sorted_times))
 
 
 if __name__ == '__main__':
